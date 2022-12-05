@@ -1,47 +1,71 @@
 #include "lists.h"
 
 /**
- * is_palindrome - checks if a singly linked list is a palindrome
- * @head: head of singly linked list
- * Return: 1 if palindrome else 0
+ * reverse_listint - reverses a linked list
+ * @head: pointer to the first node in the list
+ * Return: pointer to the first node in the new list
+ */
+void reverse_listint(listint_t **head)
+{
+	listint_t *prev = NULL;
+	listint_t *current = *head;
+	listint_t *next = NULL;
+
+	while (current)
+	{
+		next = current->next;
+		current->next = prev;
+		prev = current;
+		current = next;
+	}
+
+	*head = prev;
+}
+
+/**
+ * is_palindrome - checks if a linked list is a palindrome
+ * @head: double pointer to the linked list
+ *
+ * Return: 1 if it is, 0 if not
  */
 int is_palindrome(listint_t **head)
 {
-	listint_t *current = *head;
-	listint_t *temp = *head;
-	int head_val, tail_val;
+	listint_t *slow = *head, *fast = *head, *temp = *head, *dup = NULL;
 
-	/* empty linked list condition */
 	if (*head == NULL || (*head)->next == NULL)
 		return (1);
 
-	/* get head value for comparison */
-	head_val = (*head)->n;
-	while (current)
+	while (1)
 	{
-		/* look ahead to see if next node from current is the tail */
-		if ((current->next)->next == NULL)
+		fast = fast->next->next;
+		if (!fast)
 		{
-			/* assign val of tail for comparison */
-			tail_val = (current->next)->n;
-			/* update tail to current */
-			current->next = NULL;
+			dup = slow->next;
+			break;
+		}
+		if (!fast->next)
+		{
+			dup = slow->next->next;
+			break;
+		}
+		slow = slow->next;
+	}
 
-			if (head_val != tail_val)
-				return (0);
+	reverse_listint(&dup);
 
-			/* update head (N/B: temp is serving as the head) */
+	while (dup && temp)
+	{
+		if (temp->n == dup->n)
+		{
+			dup = dup->next;
 			temp = temp->next;
-			/* is a palindrome if head is NULL */
-			if (!temp)
-				break;
-
-			/* update head_val and current for traversing */
-			head_val = temp->n;
-			current = temp;
 		}
 		else
-			current = current->next;
+			return (0);
 	}
-	return (1);
+
+	if (!dup)
+		return (1);
+
+	return (0);
 }
