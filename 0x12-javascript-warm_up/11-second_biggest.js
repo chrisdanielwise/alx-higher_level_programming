@@ -1,4 +1,9 @@
 #!/usr/bin/node
-const sortedArray = process.argv.slice(2).sort((a, b) => { return a - b; });
-const secondToLast = sortedArray[sortedArray.length - 2];
-console.log(isNaN(secondToLast) ? 0 : secondToLast);
+if (process.argv.length <= 3) {
+  console.log(0);
+} else {
+  const args = process.argv.map(Number)
+    .slice(2, process.argv.length)
+    .sort((a, b) => a - b);
+  console.log(args[args.length - 2]);
+}
